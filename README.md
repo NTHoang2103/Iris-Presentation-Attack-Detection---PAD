@@ -54,7 +54,7 @@ Dự án sử dụng hai tập dữ liệu chuẩn quốc tế thuộc hệ sinh
 
 ---
 
-## 2. CÁC CÔNG VIỆC THỰC HIỆN VÀ KẾT QUẢ MONG MUỐN SAU CÙNG
+## 2. CÁC CÔNG VIỆC THỰC HIỆN VÀ KẾT QUẢ 
 
 ### 2.1. Các công việc và quy trình thực hiện trong đề tài (Project Workflow & Pipeline)
 
