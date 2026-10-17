@@ -1,5 +1,5 @@
 # XÂY DỰNG HỆ THỐNG NHẬN DIỆN MỐNG MẮT THẬT VÀ GIẢ BẰNG HỌC SÂU
-**(Deep Learning-based Iris Presentation Attack Detection)**
+
 
 ---
 
