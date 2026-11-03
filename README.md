@@ -225,6 +225,3 @@ Giao diện Web Demo đóng gói toàn bộ mô hình và thuật toán thành m
 *   **Học phần:** Nhận dạng mẫu (Pattern Recognition)
 *   **Đơn vị đào tạo:** Khoa Công nghệ Thông tin - Phân hiệu Trường Đại học Thủy Lợi
 *   **Giảng viên hướng dẫn:** Cô: Nguyễn Thị Hồng Tú
-*   **Đề tài:** Đề tài 8 - Hệ thống phát hiện tấn công giả mạo mống mắt (Iris Presentation Attack Detection) dựa trên học sâu và thuật toán nền tảng theo tiêu chuẩn quốc tế ISO/IEC 30107-3
-*   **Nhóm sinh viên thực hiện:** Nhóm 04
-*   **Năm học:** Học kỳ I - Năm học 2026–2027
