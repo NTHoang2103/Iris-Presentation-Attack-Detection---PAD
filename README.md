@@ -224,4 +224,4 @@ Giao diện Web Demo đóng gói toàn bộ mô hình và thuật toán thành m
 
 *   **Học phần:** Nhận dạng mẫu (Pattern Recognition)
 *   **Đơn vị đào tạo:** Khoa Công nghệ Thông tin - Phân hiệu Trường Đại học Thủy Lợi
-*   **Giảng viên hướng dẫn:** Cô: Nguyễn Thị Hồng Tú
+*   **Giảng viên hướng dẫn:** Cô: Nguyễn Thị Hồng Tú 
