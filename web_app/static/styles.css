@@ -1,0 +1,286 @@
+/* =============================================================================
+   reIris PAD Web Application - Stylesheet
+   Phong cách chuẩn: Dark Modern Medical / Biometric AI Terminal (reKidney Design)
+   ============================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-main: #06090f;
+    --bg-surface: #0a0f1d;
+    --bg-sidebar: #080d17;
+    --bg-card: #0d1424;
+    --bg-card-hover: #111a2e;
+    --border-color: #172238;
+    --border-subtle: #1f2e4d;
+    --border-cyan: rgba(6, 182, 212, 0.35);
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    --cyan-primary: #06b6d4;
+    --cyan-glow: #38bdf8;
+    --cyan-badge-bg: rgba(6, 182, 212, 0.12);
+    
+    --green-live: #10b981;
+    --green-live-bg: rgba(16, 185, 129, 0.12);
+    --green-border: rgba(16, 185, 129, 0.4);
+    
+    --red-spoof: #ef4444;
+    --red-spoof-bg: rgba(239, 68, 68, 0.12);
+    --red-border: rgba(239, 68, 68, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #080d17;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+/* Monospace Code Pill */
+.code-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: #131d33;
+    color: #38bdf8;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid #1f2e4d;
+    display: inline-block;
+}
+
+.code-pill-cyan {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: rgba(6, 182, 212, 0.12);
+    color: #22d3ee;
+    padding: 2px 8px;
+    border-radius: 5px;
+    border: 1px solid rgba(6, 182, 212, 0.35);
+}
+
+.code-pill-red {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+    padding: 2px 8px;
+    border-radius: 5px;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.code-pill-green {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: rgba(16, 185, 129, 0.12);
+    color: #34d399;
+    padding: 2px 8px;
+    border-radius: 5px;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+/* Hasthtag Cyan in Titles */
+.hashtag-cyan {
+    color: var(--cyan-primary);
+    font-weight: 700;
+    margin-left: 4px;
+}
+
+/* Pulsing Cyan Dot in Logo */
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--cyan-primary);
+    box-shadow: 0 0 10px var(--cyan-primary);
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.9;
+        box-shadow: 0 0 8px #06b6d4;
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: 1;
+        box-shadow: 0 0 14px #22d3ee;
+    }
+}
+
+/* Card Styling */
+.rekidney-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rekidney-card:hover {
+    border-color: var(--border-subtle);
+}
+
+/* Sidebar Navigation Link Active State */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.nav-item:hover {
+    background-color: #0d1829;
+    color: #f1f5f9;
+}
+
+.nav-item.active {
+    background-color: #0e243a;
+    color: #38bdf8;
+    font-weight: 600;
+    border-left: 3px solid #06b6d4;
+}
+
+/* Top Navigation Bar */
+.top-navbar {
+    background-color: #080d17;
+    border-bottom: 1px solid var(--border-color);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+
+/* Sub-Tab Navigation */
+.subtab-btn {
+    padding: 0.55rem 1.15rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.subtab-btn:hover {
+    color: var(--text-secondary);
+    background-color: #10192d;
+}
+
+.subtab-btn.active {
+    color: #38bdf8;
+    background-color: #0e2239;
+    border-color: rgba(6, 182, 212, 0.4);
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.15);
+}
+
+/* Custom Slider Styling */
+input[type="range"].custom-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 5px;
+    background: #1e293b;
+    outline: none;
+}
+
+input[type="range"].custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #06b6d4;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 10px #06b6d4;
+    transition: transform 0.1s ease;
+}
+
+input[type="range"].custom-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+/* Floating AI Assistant Badge */
+.floating-ai-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 28px;
+    background: linear-gradient(135deg, #0284c7, #06b6d4);
+    color: #ffffff;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 50;
+}
+
+.floating-ai-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.55);
+}
+
+/* Live / Spoof Result Glow Banners */
+.banner-live {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 78, 59, 0.25) 100%);
+    border: 1.5px solid #10b981;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+}
+
+.banner-spoof {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(127, 29, 29, 0.25) 100%);
+    border: 1.5px solid #ef4444;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.2);
+}
+

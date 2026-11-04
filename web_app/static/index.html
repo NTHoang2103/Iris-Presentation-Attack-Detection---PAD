@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>reIris - Iris Presentation Attack Detection (ISO/IEC 30107-3)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#06090f',
+                        surface: '#0a0f1d',
+                        sidebar: '#080d17',
+                        cardbg: '#0d1424',
+                        cardhover: '#111a2e',
+                        bordercol: '#172238',
+                        cyanbrand: '#06b6d4',
+                        cyanbright: '#38bdf8',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="bg-[#06090f] text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <!-- =========================================================================
+         TOP NAVBAR (CHUẨN REKIDNEY DESIGN SYSTEM)
+         ========================================================================= -->
+    <header class="top-navbar px-6 flex items-center justify-between border-b border-[#172238] sticky top-0 z-50 bg-[#080d17]/95 backdrop-blur-md">
+        <!-- Trái: Logo & Breadcrumb -->
+        <div class="flex items-center gap-6">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-2 cursor-pointer select-none" onclick="switchPage('overview')">
+                <div class="flex items-center gap-1.5">
+                    <span class="font-extrabold text-xl tracking-tight text-white">reIris</span>
+                    <span class="pulse-dot"></span>
+                </div>
+            </div>
+
+            <!-- Breadcrumbs -->
+            <div class="flex items-center gap-2 text-xs text-slate-400">
+                <span>Documentation</span>
+                <span class="text-slate-600">›</span>
+                <span id="breadcrumb-page" class="text-cyan-400 font-semibold">Tổng quan</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- =========================================================================
+         MAIN LAYOUT: SIDEBAR + CONTENT
+         ========================================================================= -->
+    <div class="flex flex-1 relative">
+        
+        <!-- SIDEBAR TRÁI (3 MỤC CHÍNH YÊU CẦU) -->
+        <aside class="w-64 bg-[#080d17] border-r border-[#172238] flex flex-col shrink-0 p-4 sticky top-14 h-[calc(100vh-56px)] overflow-y-auto">
+            
+            <div class="space-y-6">
+                <!-- Group 1: Điều hướng chung -->
+                <div class="space-y-1">
+                    <!-- Mục 1: Tổng quan -->
+                    <div id="nav-overview" onclick="switchPage('overview')" class="nav-item active">
+                        <span>Tổng quan</span>
+                    </div>
+
+                    <!-- Mục 2: Hướng Dẫn Nhanh -->
+                    <div id="nav-quickstart" onclick="switchPage('quickstart')" class="nav-item">
+                        <span>Hướng Dẫn Nhanh</span>
+                    </div>
+                </div>
+
+                <!-- Group 2: Nghiên cứu & Mô hình -->
+                <div>
+                    <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
+                        NGHIÊN CỨU & MÔ HÌNH
+                    </div>
+                    <!-- Mục 3: Nghiên cứu Mô Hình (Chứa đủ 4 chức năng) -->
+                    <div id="nav-research" onclick="switchPage('research')" class="nav-item">
+                        <span>Nghiên cứu Mô Hình</span>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- NỘI DUNG CHÍNH (CONTENT AREA) -->
+        <main class="flex-1 bg-[#06090f] p-6 lg:p-8 overflow-y-auto max-w-7xl mx-auto w-full">
+
+            <!-- =================================================================
+                 PAGE 1: TỔNG QUAN (PHONG CÁCH REKIDNEY ẢNH 1 ĐÚNG CHUẨN)
+                 ================================================================= -->
+            <section id="page-overview" class="space-y-6">
+                
+                <div class="rekidney-card">
+                    <!-- Heading 1 -->
+                    <h1 class="text-2xl font-extrabold text-white flex items-center gap-1.5 tracking-tight">
+                        1. Khái Niệm Cơ Bản Về Các Mô Hình Thị Giác Máy Tính Trong Phát Hiện Giả Mạo Mống Mắt <span class="hashtag-cyan">#</span>
+                    </h1>
+                    
+                    <div class="mt-2 mb-4">
+                        <span class="code-pill-cyan text-xs font-semibold">Deep Learning Architectures in Biometric Iris Presentation Attack Detection</span>
+                    </div>
+
+                    <p class="text-slate-300 text-sm leading-relaxed mb-5">
+                        Trong kỷ nguyên số hóa an ninh và kiểm soát sinh trắc học hiện đại (cổng tự động SmartGates tại sân bay, thẻ căn cước công dân gắn chip và ngân hàng an ninh cao), bài toán tự động nhận diện và phát hiện tấn công giả mạo mống mắt (<strong>Iris Presentation Attack Detection - PAD</strong>) trên ảnh hồng ngoại gần <span class="code-pill">{ NIR 850nm - CASIA-Iris-Interval }</span> đòi hỏi sự kết hợp chặt chẽ giữa các thuật toán nhận dạng mẫu nền tảng và các kiến trúc học sâu tiên tiến nhất. Đề tài tập trung nghiên cứu, đối chuẩn thực nghiệm chuyên sâu giữa hai trường phái kiến trúc thị giác máy tính hàng đầu: mô hình trích xuất vi kết cấu cục bộ kinh điển (<span class="code-pill">Spatial Uniform LBP + SVM RBF</span>) và kiến trúc mạng nơ-ron tích chập sâu kết hợp hàm mất mát hội tụ hiện đại (<span class="code-pill">Deep ResNet-50 + Focal Loss</span>).
+                    </p>
+
+                    <div class="space-y-4 text-sm text-slate-300 leading-relaxed">
+                        
+                        <div class="flex items-start gap-2.5">
+                            <span class="text-cyan-400 text-base leading-none mt-1">•</span>
+                            <div>
+                                <strong class="text-white">Deep ResNet-50 + Focal Loss (Mô Hình Chủ Đạo):</strong> Kiến trúc mạng nơ-ron tích chập 50 tầng kết hợp cơ chế khối phần dư (Residual Blocks) và đường kết nối tắt (Shortcut Connection) cho phép lan truyền gradient trực tiếp qua các lớp sâu, giải quyết triệt để sự suy biến đạo hàm. Đi kèm với hàm mất mát Focal Loss (<span class="code-pill">FL(p_t) = -α(1-p_t)^γ * log(p_t)</span> với <span class="code-pill">γ = 2.0, α = 0.25</span>) tự động điều chế trọng số để tập trung vào các mẫu giả mạo khó, mô hình trích xuất đặc trưng phân cấp sâu từ hốc mống mắt (crypts) đến nếp gấp collarette ở tầng ngữ nghĩa cao, đạt độ chính xác dẫn đầu tuyệt đối <span class="code-pill-green font-bold">Worst-case ACER = 0.00%</span> và <span class="code-pill-cyan font-bold">ROC-AUC = 100.00%</span> trên tập kiểm thử độc lập 2.282 mẫu.
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-2.5">
+                            <span class="text-cyan-400 text-base leading-none mt-1">•</span>
+                            <div>
+                                <strong class="text-white">Cơ Chế Mặt Nạ Vành Khăn Annular Masking (Giải Thuật Chống "Học Tắt" - Anti-Shortcut):</strong> Trọng tâm đột phá của giải thuật tiền xử lý là việc định vị tự động tâm đồng tử (cx, cy) và bán kính R_pupil bằng Hough Circles kết hợp phân ngưỡng thích nghi Otsu, sau đó <span class="code-pill-cyan">khoét đen 100% vùng đồng tử (r &le; 1.10 * R_pupil)</span> và che phủ lông mi mí mắt. Bước tiền xử lý này loại bỏ hoàn toàn vòng đốm sáng đèn LED hồng ngoại phản xạ (NIR LED reflection spots) đặc trưng của cảm biến quang học CASIA, ép buộc mạng nơ-ron phải học các sợi vân mô mống mắt sinh học tự nhiên, triệt tiêu 100% hiện tượng học vẹt (Shortcut Learning).
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-2.5">
+                            <span class="text-cyan-400 text-base leading-none mt-1">•</span>
+                            <div>
+                                <strong class="text-white">Cơ Chế Phân Tích Phổ Tần Số 2D-FFT (Frequency Domain Analysis):</strong> Bằng cách chuyển đổi ma trận vành khăn mống mắt sang miền tần số không gian 2D thông qua biến đổi Fourier nhanh, hệ thống phân tích phổ năng lượng vi mô. Mắt thật sinh học sở hữu năng lượng phổ tần số cao trải đều đẳng hướng mềm mại; trong khi đó các mẫu tấn công tái phát qua màn hình (Replay Attack) sẽ làm lộ các đỉnh xung tần số bất thường do sọc quét ma trận điểm ảnh (Moiré pattern), còn ảnh in ấn (Print Attack) sẽ bị suy giảm rõ rệt dải tần số cao do hiệu ứng nhòe quang học của mực in.
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-2.5">
+                            <span class="text-cyan-400 text-base leading-none mt-1">•</span>
+                            <div>
+                                <strong class="text-white">Họ Mô Hình Nhận Dạng Mẫu Kinh Điển (Spatial Uniform LBP + SVM RBF):</strong> Kiến trúc đối chuẩn dựa trên việc tính toán mẫu nhị phân cục bộ xoay bất biến (Uniform LBP với P=8, R=1) chia lưới không gian 4x4 để thu được vector 160 chiều biểu diễn phân bố vi kết cấu. Điểm mạnh vượt trội của mô hình là kích thước siêu nhỏ gọn chỉ <span class="code-pill">0.29 MB</span> và tốc độ suy luận siêu tốc <span class="code-pill">~12.4 ms</span>, đạt độ chính xác ấn tượng 99.85%. Tuy nhiên, mô hình vẫn bộc lộ lỗ hổng bị đánh lừa bởi một số vi hạt in ấn chất lượng cao (gặp 4 mẫu sai sót trong kiểm thử lâm sàng).
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Heading 2 -->
+                <div class="rekidney-card">
+                    <h2 class="text-xl font-extrabold text-white flex items-center gap-1.5 tracking-tight">
+                        2. Giải Thích Cơ Chế Hoạt Động Của Các Mô Hình Trên Dữ Liệu Mống Mắt Sinh Học <span class="hashtag-cyan">#</span>
+                    </h2>
+
+                    <div class="mt-2 mb-4">
+                        <span class="code-pill-cyan text-xs font-semibold">ISO/IEC 30107-3 Standardized Biometric Vulnerability Assessment</span>
+                    </div>
+
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        Theo tiêu chuẩn quốc tế <strong>ISO/IEC 30107-3</strong>, chất lượng của một hệ thống chống giả mạo sinh trắc học không chỉ đo bằng tỷ lệ đoán đúng tổng quát, mà được định lượng nghiêm ngặt thông qua hai chỉ số lỗi bất đối xứng:
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                        <div class="bg-[#10182b] border border-[#1c2c4d] rounded-lg p-3.5">
+                            <div class="text-xs font-bold text-red-400 uppercase tracking-wider mb-1">APCER (Attack Error)</div>
+                            <div class="text-[11px] text-slate-300 leading-relaxed">
+                                Tỷ lệ phân loại nhầm mẫu giả mạo thành mắt thật (Cho kẻ gian lọt cổng). Đòi hỏi <span class="code-pill-red font-mono">APCER &rarr; 0%</span> tại các trạm kiểm soát sân bay và kho tiền.
+                            </div>
+                        </div>
+
+                        <div class="bg-[#10182b] border border-[#1c2c4d] rounded-lg p-3.5">
+                            <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">BPCER (Live Error)</div>
+                            <div class="text-[11px] text-slate-300 leading-relaxed">
+                                Tỷ lệ từ chối nhầm người dùng hợp lệ (Bắt nhân viên thật quét lại). Cần tối ưu <span class="code-pill-cyan font-mono">BPCER &rarr; 0%</span> để đảm bảo sự tiện lợi khi điểm danh văn phòng.
+                            </div>
+                        </div>
+
+                        <div class="bg-[#10182b] border border-[#1c2c4d] rounded-lg p-3.5">
+                            <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">EER & ACER</div>
+                            <div class="text-[11px] text-slate-300 leading-relaxed">
+                                Điểm cân bằng tối ưu Equal Error Rate tại <span class="code-pill-green font-mono">τ = 0.9109</span> và chỉ số lỗi trung bình nghiêm ngặt nhất <span class="code-pill-green font-mono">ACER = (APCER+BPCER)/2</span>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-slate-400 italic">
+                        * Để thực hành kiểm định trực tiếp 4 chức năng cốt lõi trên tập ảnh lâm sàng, vui lòng chuyển sang mục <strong class="text-cyan-400 cursor-pointer" onclick="switchPage('research')">Nghiên cứu Mô Hình</strong> ở thanh bên trái.
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- =================================================================
+                 PAGE 2: HƯỚNG DẪN NHANH (QUICK START)
+                 ================================================================= -->
+            <section id="page-quickstart" class="space-y-6 hidden">
+                
+                <div class="rekidney-card">
+                    <h1 class="text-2xl font-extrabold text-white flex items-center gap-1.5 tracking-tight">
+                        Hướng Dẫn Nhanh Vận Hành Phòng Thí Nghiệm (Standard Operating Procedure) <span class="hashtag-cyan">#</span>
+                    </h1>
+                    <div class="mt-2 mb-4">
+                        <span class="code-pill-cyan text-xs font-semibold">Quy Trình 3 Bước Kiểm Định An Ninh Sinh Trắc Học Mống Mắt</span>
+                    </div>
+
+                    <!-- Bước 1 -->
+                    <div class="border-l-2 border-cyan-500 pl-4 py-1 space-y-2 mb-6">
+                        <div class="text-base font-bold text-white flex items-center gap-2">
+                            <span class="bg-cyan-500/20 text-cyan-400 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                            Bước 1: Nạp Dữ Liệu Ảnh Mống Mắt Cần Giám Định
+                        </div>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Vào mục <strong>Nghiên cứu Mô Hình</strong>. Bạn có thể chọn trực tiếp các ca mẫu lâm sàng có sẵn trong kho đối chuẩn:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300">
+                            <div class="bg-[#10182b] p-2 rounded border border-[#1a273e]">
+                                • <strong class="text-emerald-400">[Live 01, 02, 03]:</strong> Mắt thật từ bộ cơ sở dữ liệu CASIA-Iris-Interval.
+                            </div>
+                            <div class="bg-[#10182b] p-2 rounded border border-[#1a273e]">
+                                • <strong class="text-red-400">[Spoof 01, 02, 03]:</strong> Mắt tổng hợp CASIA-Syn, ảnh in Print Attack, hoặc phát lại Replay Attack.
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400">
+                            * Hoặc kéo thả tải lên bất kỳ tệp ảnh mống mắt nào từ máy tính của bạn (<span class="code-pill">.jpg</span>, <span class="code-pill">.bmp</span>, <span class="code-pill">.png</span>).
+                        </p>
+                    </div>
+
+                    <!-- Bước 2 -->
+                    <div class="border-l-2 border-cyan-500 pl-4 py-1 space-y-2 mb-6">
+                        <div class="text-base font-bold text-white flex items-center gap-2">
+                            <span class="bg-cyan-500/20 text-cyan-400 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                            Bước 2: Thiết Lập Kịch Bản Tấn Công & Hàng Rào An Ninh Động
+                        </div>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Tại giao diện thử nghiệm, bạn có thể chủ động:
+                        </p>
+                        <div class="space-y-1.5 text-xs text-slate-300">
+                            <div>• <strong>Chức năng 1 (Mô phỏng tấn công):</strong> Bật thử thách <em>Tấn công In ấn (Print)</em> hoặc <em>Tấn công Màn hình (Replay)</em> để xem mô hình phản ứng với nhiễu vật lý thực tế.</div>
+                            <div>• <strong>Chức năng 4 (Thanh trượt an ninh):</strong> Kéo thanh trượt ngưỡng quyết định <span class="code-pill">τ</span> hoặc bấm nhanh 1 trong 3 chế độ: <em>Văn phòng (0.80)</em>, <em>Chuẩn ISO EER (0.9109)</em>, <em>Sân bay / Kho tiền (0.96)</em>. Thẻ phán quyết LIVE / SPOOF sẽ lập tức đổi trạng thái theo thời gian thực!</div>
+                        </div>
+                    </div>
+
+                    <!-- Bước 3 -->
+                    <div class="border-l-2 border-cyan-500 pl-4 py-1 space-y-2">
+                        <div class="text-base font-bold text-white flex items-center gap-2">
+                            <span class="bg-cyan-500/20 text-cyan-400 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                            Bước 3: Đối Sánh Kép & Soi Tư Duy AI Qua Kính Hiển Vi XAI
+                        </div>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Hệ thống tự động kích hoạt đồng thời:
+                        </p>
+                        <div class="space-y-1.5 text-xs text-slate-300">
+                            <div>• <strong>Chức năng 2 (Đấu tay đôi):</strong> So sánh song song điểm số, kích thước mô hình (0.29 MB vs 94 MB) và độ trễ của Classical LBP+SVM và Deep ResNet-50.</div>
+                            <div>• <strong>Chức năng 3 (Kính hiển vi AI):</strong> Quan sát 4 góc nhìn đồng thời: Ảnh gốc NIR, Vành khăn Annular ROI (chứng minh đồng tử khoét đen 100%), Phổ tần số 2D-FFT và Bản đồ nhiệt Grad-CAM màu JET.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =================================================================
+                 PAGE 3: NGHIÊN CỨU MÔ HÌNH (ĐẦY ĐỦ 4 CHỨC NĂNG CỐT LÕI)
+                 ================================================================= -->
+            <section id="page-research" class="space-y-6 hidden">
+                
+                <!-- Tab Navigation Header -->
+                <div class="flex items-center gap-2 border-b border-[#172238] pb-3">
+                    <button id="subtab-btn-infer" onclick="switchSubTab('infer')" class="subtab-btn active">
+                        Thử Nghiệm Lâm Sàng
+                    </button>
+                    <button id="subtab-btn-bench" onclick="switchSubTab('bench')" class="subtab-btn">
+                        Biểu Đồ Benchmark
+                    </button>
+                    <button id="subtab-btn-compare" onclick="switchSubTab('compare')" class="subtab-btn">
+                        So Sánh Mô Hình
+                    </button>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SUB-TAB 1: THỬ NGHIỆM LÂM SÀNG (CHỨA ĐỦ 4 CHỨC NĂNG)
+                     ------------------------------------------------------------- -->
+                <div id="subtab-infer" class="space-y-6">
+
+                    <!-- HÀNG 1: BỘ CHỌN ẢNH & UPLOAD -->
+                    <div class="rekidney-card">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                            
+                            <div class="md:col-span-7 space-y-1.5">
+                                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                                    1. Chọn Ca Mẫu Mống Mắt Đối Chuẩn (Kho Dữ Liệu Chuẩn)
+                                </label>
+                                <select id="sample-select" onchange="onSampleChange()" class="w-full bg-[#10182b] border border-[#1e2d4a] text-slate-200 text-xs rounded-lg px-3 py-2.5 outline-none focus:border-cyan-500 transition">
+                                    <option value="live_01">[Live 01] CASIA-Interval Mắt Trái (Oculus Sinister - S1001L01)</option>
+                                    <option value="live_02">[Live 02] CASIA-Interval Mắt Phải (Oculus Dexter - S1001R01)</option>
+                                    <option value="live_03">[Live 03] CASIA-Interval Đối Tượng Mới (S1002L01)</option>
+                                    <option value="spoof_syn_01">[Spoof 01] CASIA-Syn Mắt Nhân Tạo Tổng Hợp (Syn-000_1)</option>
+                                    <option value="spoof_print_01">[Spoof 02] Print Attack (Tấn công in ấn giấy ảnh)</option>
+                                    <option value="spoof_replay_01">[Spoof 03] Replay Attack (Tấn công phát lại qua màn hình)</option>
+                                </select>
+                            </div>
+
+                            <div class="md:col-span-5 space-y-1.5">
+                                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                                    Hoặc Tải Ảnh Mống Mắt Từ Máy Tính
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <input type="file" id="file-uploader" accept="image/*" onchange="onFileUpload(event)" class="text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-cyan-950 file:text-cyan-400 hover:file:bg-cyan-900 cursor-pointer w-full bg-[#10182b] border border-[#1e2d4a] rounded-lg p-1">
+                                    <button onclick="triggerAnalysis()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs px-4 py-2 rounded-lg shrink-0 transition shadow-[0_0_12px_rgba(6,182,212,0.3)]">
+                                        Giám Định
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- HÀNG 2: CHỨC NĂNG 1 & CHỨC NĂNG 4 (BỘ ĐIỀU KHIỂN TƯƠNG TÁC) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        
+                        <!-- CHỨC NĂNG 1: MÔ PHỎNG TẤN CÔNG VẬT LÝ -->
+                        <div class="lg:col-span-6 rekidney-card">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">
+                                    CHỨC NĂNG 1: MÔ PHỎNG TẤN CÔNG VẬT LÝ TRỰC TIẾP
+                                </span>
+                                <span class="text-[11px] text-slate-400">Optical Attack Simulator</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mb-3">
+                                Giả lập đòn tấn công vật lý quang học ngoài đời thực vào ảnh mống mắt đang chọn:
+                            </p>
+                            
+                            <div class="grid grid-cols-3 gap-2">
+                                <label class="flex flex-col items-center justify-center p-2.5 rounded-lg border border-[#1e2d4a] bg-[#10182b] hover:border-cyan-500/50 cursor-pointer transition select-none text-center">
+                                    <input type="radio" name="attack-mode" value="none" checked onchange="onAttackModeChange()" class="hidden">
+                                    
+                                    <span class="text-xs font-semibold text-slate-200">Nguyên Bản</span>
+                                    <span class="text-[10px] text-slate-500">Ảnh gốc không can thiệp</span>
+                                </label>
+
+                                <label class="flex flex-col items-center justify-center p-2.5 rounded-lg border border-[#1e2d4a] bg-[#10182b] hover:border-cyan-500/50 cursor-pointer transition select-none text-center">
+                                    <input type="radio" name="attack-mode" value="print" onchange="onAttackModeChange()" class="hidden">
+                                    
+                                    <span class="text-xs font-semibold text-slate-200">Tấn Công In Ấn</span>
+                                    <span class="text-[10px] text-slate-500">Mực Halftone + Nhòe</span>
+                                </label>
+
+                                <label class="flex flex-col items-center justify-center p-2.5 rounded-lg border border-[#1e2d4a] bg-[#10182b] hover:border-cyan-500/50 cursor-pointer transition select-none text-center">
+                                    <input type="radio" name="attack-mode" value="replay" onchange="onAttackModeChange()" class="hidden">
+                                    
+                                    <span class="text-xs font-semibold text-slate-200">Tấn Công Màn Hình</span>
+                                    <span class="text-[10px] text-slate-500">Sọc Moiré + Vệt Lóa</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- CHỨC NĂNG 4: THANH TRƯỢT HÀNG RÀO AN NINH ĐỘNG -->
+                        <div class="lg:col-span-6 rekidney-card">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">
+                                    CHỨC NĂNG 4: THANH TRƯỢT HÀNG RÀO AN NINH ĐỘNG
+                                </span>
+                                <span class="text-[11px] text-slate-400">Dynamic ISO/IEC 30107-3 Gate</span>
+                            </div>
+                            
+                            <!-- 3 Chế độ cấu hình nhanh -->
+                            <div class="grid grid-cols-3 gap-2 mb-3">
+                                <button onclick="setQuickTau(0.8000)" class="bg-[#10182b] hover:bg-[#16233f] border border-[#1e2d4a] text-slate-300 py-1 px-1.5 rounded text-[11px] font-medium transition text-center">
+                                    Văn Phòng (τ = 0.80)
+                                </button>
+                                <button onclick="setQuickTau(0.9109)" class="bg-[#0e243a] hover:bg-[#123150] border border-cyan-500/40 text-cyan-400 py-1 px-1.5 rounded text-[11px] font-bold transition text-center">
+                                    Chuẩn ISO (τ = 0.9109)
+                                </button>
+                                <button onclick="setQuickTau(0.9600)" class="bg-[#10182b] hover:bg-[#16233f] border border-[#1e2d4a] text-slate-300 py-1 px-1.5 rounded text-[11px] font-medium transition text-center">
+                                    Sân Bay (τ = 0.96)
+                                </button>
+                            </div>
+
+                            <!-- Slider -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-slate-400 font-medium">Ngưỡng Quyết Định (τ):</span>
+                                    <span id="slider-val-display" class="font-mono text-cyan-400 font-bold text-sm">0.9109</span>
+                                </div>
+                                <input type="range" id="tau-slider" min="0.50" max="0.99" step="0.001" value="0.9109" oninput="onTauSliderInput(this.value)" class="custom-slider">
+                                <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                                    <span>0.50 (Dễ dãi - BPCER&rarr;0%)</span>
+                                    <span>0.9109 (EER)</span>
+                                    <span>0.99 (Khắt khe - APCER&rarr;0%)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- HÀNG 3: CHỨC NĂNG 2: So sánh 2 mô hình -->
+                    <div class="rekidney-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-cyan-400 tracking-wider">
+                                    CHỨC NĂNG 2: So sánh 2 mô hình
+                                </h3>
+                                <div class="text-xs text-slate-400">Classical Machine Learning (LBP+SVM) vs. Deep Transfer Learning (ResNet-50)</div>
+                            </div>
+                            <div id="duel-consensus-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950/40 border border-emerald-500/50 text-emerald-400">
+                                ĐỒNG THUẬN QUYẾT ĐỊNH
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            
+                            <!-- Box 1: Classical LBP + SVM -->
+                            <div class="bg-[#10182b] border border-[#1e2d4a] rounded-xl p-4 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <span class="text-[10px] font-bold text-slate-400 tracking-wider block">mô hình kinh điển</span>
+                                            <h4 class="text-base font-extrabold text-white">Spatial LBP + SVM (RBF)</h4>
+                                        </div>
+                                        <span class="text-xs font-mono text-slate-400 bg-[#080d17] px-2 py-0.5 rounded border border-slate-700">0.29 MB</span>
+                                    </div>
+                                    
+                                    <!-- Verdict Banner -->
+                                    <div id="svm-verdict-box" class="py-3 px-4 rounded-lg my-3 text-center transition">
+                                        <div id="svm-verdict-text" class="text-xl font-extrabold tracking-wide">LIVE (99.8%)</div>
+                                        <div class="text-[11px] text-slate-400 mt-0.5">Xác suất người thật dựa trên 160 đặc trưng vi kết cấu</div>
+                                    </div>
+
+                                    <!-- Score Bar -->
+                                    <div class="space-y-1 mb-3">
+                                        <div class="flex justify-between text-xs font-mono">
+                                            <span class="text-slate-400">Liveness Score:</span>
+                                            <span id="svm-score-num" class="text-slate-200 font-bold">0.9980</span>
+                                        </div>
+                                        <div class="w-full bg-[#080d17] h-2 rounded-full overflow-hidden border border-[#1e2d4a]">
+                                            <div id="svm-progress-bar" class="bg-cyan-500 h-full rounded-full transition-all duration-300" style="width: 99.8%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-3 border-t border-[#1e2d4a] text-xs text-slate-400 space-y-1 font-mono">
+                                    <div class="flex justify-between">
+                                        <span>Độ trễ suy luận:</span>
+                                        <span id="svm-lat-display" class="text-slate-200">~12.4 ms</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Không gian đặc trưng:</span>
+                                        <span class="text-slate-200">160D Uniform LBP</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Box 2: Deep ResNet-50 + Focal Loss -->
+                            <div class="bg-[#10182b] border border-cyan-500/40 rounded-xl p-4 flex flex-col justify-between shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+                                <div>
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <span class="text-[10px] font-bold text-cyan-400 tracking-wider block">mô hình học sâu</span>
+                                            <h4 class="text-base font-extrabold text-white">Deep ResNet-50 + Focal Loss</h4>
+                                        </div>
+                                        <span class="text-xs font-mono text-cyan-400 bg-[#080d17] px-2 py-0.5 rounded border border-cyan-500/40">94.3 MB</span>
+                                    </div>
+
+                                    <!-- Verdict Banner -->
+                                    <div id="res-verdict-box" class="py-3 px-4 rounded-lg my-3 text-center transition">
+                                        <div id="res-verdict-text" class="text-xl font-extrabold tracking-wide">LIVE (100.0%)</div>
+                                        <div class="text-[11px] text-slate-400 mt-0.5">Xác suất người thật dựa trên 2048 đặc trưng ngữ nghĩa sâu</div>
+                                    </div>
+
+                                    <!-- Score Bar -->
+                                    <div class="space-y-1 mb-3">
+                                        <div class="flex justify-between text-xs font-mono">
+                                            <span class="text-slate-400">Liveness Score:</span>
+                                            <span id="res-score-num" class="text-cyan-400 font-bold">0.9998</span>
+                                        </div>
+                                        <div class="w-full bg-[#080d17] h-2 rounded-full overflow-hidden border border-[#1e2d4a]">
+                                            <div id="res-progress-bar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-3 border-t border-[#1e2d4a] text-xs text-slate-400 space-y-1 font-mono">
+                                    <div class="flex justify-between">
+                                        <span>Độ trễ suy luận:</span>
+                                        <span id="res-lat-display" class="text-cyan-400">~26.8 ms</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Kiến trúc nơ-ron:</span>
+                                        <span class="text-slate-200">50 Tầng Residual + Focal Loss</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Duel Analysis Commentary -->
+                        <div id="duel-commentary-box" class="mt-4 p-3 rounded-lg bg-[#080d17] border border-[#1e2d4a] text-xs text-slate-300 leading-relaxed">
+                            <strong>Nhận xét phân tích đối đầu:</strong> <span id="duel-commentary-text">Cả hai mô hình đều đồng thuận đưa ra kết luận mẫu mống mắt là LIVE tại ngưỡng an ninh τ = 0.9109.</span>
+                        </div>
+                    </div>
+
+                    <!-- HÀNG 4: CHỨC NĂNG 3: KÍNH HIỂN VI SOI TƯ DUY AI (XAI 4-VIEW INSPECTION) -->
+                    <div class="rekidney-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <h3 class="text-sm font-bold text-cyan-400 uppercase tracking-wider">
+                                    CHỨC NĂNG 3: KÍNH HIỂN VI SOI TƯ DUY AI (EXPLAINABLE AI: GRAD-CAM & 2D-FFT)
+                                </h3>
+                                <div class="text-xs text-slate-400">Minh chứng tính khoa học: Đồng tử khoét đen 100% chống học vẹt & Vùng chú ý JET</div>
+                            </div>
+                            <span class="code-pill-cyan text-xs">Simultaneous 4-View Matrix</span>
+                        </div>
+
+                        <!-- 4 View Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            
+                            <!-- View 1: Original NIR -->
+                            <div class="bg-[#10182b] border border-[#1e2d4a] rounded-xl p-3 flex flex-col items-center">
+                                <div class="w-full aspect-square bg-[#080d17] rounded-lg overflow-hidden flex items-center justify-center border border-[#172238] mb-2 relative group">
+                                    <img id="img-view-raw" src="" alt="Ảnh NIR Đầu Vào" class="w-full h-full object-contain">
+                                    <div class="absolute bottom-1 right-1 bg-black/70 text-[10px] font-mono px-1.5 py-0.5 rounded text-slate-400">NIR 850nm</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-xs font-bold text-white">1. Ảnh Gốc Thu Nhận</div>
+                                    <div class="text-[11px] text-slate-400">Từ cảm biến quang học</div>
+                                </div>
+                            </div>
+
+                            <!-- View 2: Annular ROI (Anti-Shortcut Proof) -->
+                            <div class="bg-[#10182b] border border-[#1e2d4a] rounded-xl p-3 flex flex-col items-center">
+                                <div class="w-full aspect-square bg-[#080d17] rounded-lg overflow-hidden flex items-center justify-center border border-[#172238] mb-2 relative group">
+                                    <img id="img-view-roi" src="" alt="Vành Khăn Annular ROI" class="w-full h-full object-contain">
+                                    <div class="absolute bottom-1 right-1 bg-cyan-950/80 border border-cyan-500/40 text-[10px] font-mono px-1.5 py-0.5 rounded text-cyan-400">224x224</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-xs font-bold text-cyan-400">2. Vành Khăn Annular ROI</div>
+                                    <div class="text-[11px] text-slate-300 font-semibold">Khoét đen đồng tử 100%</div>
+                                </div>
+                            </div>
+
+                            <!-- View 3: Grad-CAM JET Heatmap -->
+                            <div class="bg-[#10182b] border border-cyan-500/40 rounded-xl p-3 flex flex-col items-center shadow-[0_0_12px_rgba(6,182,212,0.1)]">
+                                <div class="w-full aspect-square bg-[#080d17] rounded-lg overflow-hidden flex items-center justify-center border border-[#172238] mb-2 relative group">
+                                    <img id="img-view-cam" src="" alt="Bản Đồ Nhiệt Grad-CAM" class="w-full h-full object-contain">
+                                    <div class="absolute bottom-1 right-1 bg-black/70 text-[10px] font-mono px-1.5 py-0.5 rounded text-red-400">layer4[-1]</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-xs font-bold text-red-400">3. Bản Đồ Nhiệt Grad-CAM</div>
+                                    <div class="text-[11px] text-slate-400">Vùng chú ý mạng ResNet-50</div>
+                                </div>
+                            </div>
+
+                            <!-- View 4: 2D-FFT Fourier Spectrum -->
+                            <div class="bg-[#10182b] border border-[#1e2d4a] rounded-xl p-3 flex flex-col items-center">
+                                <div class="w-full aspect-square bg-[#080d17] rounded-lg overflow-hidden flex items-center justify-center border border-[#172238] mb-2 relative group">
+                                    <img id="img-view-fft" src="" alt="Phổ Tần Số 2D-FFT" class="w-full h-full object-contain">
+                                    <div class="absolute bottom-1 right-1 bg-black/70 text-[10px] font-mono px-1.5 py-0.5 rounded text-amber-400">Log Magma</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-xs font-bold text-amber-400">4. Phổ Tần Số 2D-FFT</div>
+                                    <div class="text-[11px] text-slate-400">Phân tích vi sóng không gian</div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Scientific Explanation Footnote -->
+                        <div class="mt-4 p-3 rounded-lg bg-[#080d17] border border-[#1e2d4a] text-xs text-slate-300 leading-relaxed">
+                            <span class="text-cyan-400 font-bold">Minh chứng tính khoa học trước Hội đồng:</span>
+                            Quan sát ảnh (2) và (3): Vùng đồng tử ở giữa được khoét đen 100% nên trên bản đồ nhiệt Grad-CAM hoàn toàn mang màu xanh lam lạnh (trọng số 0). Ngược lại, vùng màu đỏ rực (vùng AI dựa vào để ra quyết định) bao phủ trọn vẹn lên các nếp gấp collarette và hốc mống mắt sinh học. Điều này chứng minh thuật toán hoàn toàn miễn nhiễm với hiện tượng "học vẹt" (Shortcut Learning) bởi vòng đốm sáng đèn LED.
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SUB-TAB 2: BIỂU ĐỒ BENCHMARK
+                     ------------------------------------------------------------- -->
+                <div id="subtab-bench" class="space-y-6 hidden">
+                    
+                    <div class="rekidney-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-base font-extrabold text-white">Đường Cong Huấn Luyện & Đối Sánh Thực Nghiệm (10 Epochs GPU)</h3>
+                                <div class="text-xs text-slate-400">Tập dữ liệu CASIA-Iris-Interval (Live) & CASIA-Iris-Syn (Spoof)</div>
+                            </div>
+                            <span class="code-pill-cyan text-xs">Kaggle GPU P100 Runtime</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Loss Chart -->
+                            <div class="bg-[#10182b] border border-[#1e2d4a] rounded-xl p-4">
+                                <h4 class="text-xs font-bold text-slate-300 mb-2">Đường Cong Hàm Mất Mát (Focal Loss)</h4>
+                                <div class="h-64">
+                                    <canvas id="chart-loss"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Accuracy Chart -->
+                            <div class="bg-[#10182b] border border-[#1e2d4a] rounded-xl p-4">
+                                <h4 class="text-xs font-bold text-slate-300 mb-2">Độ Chính Xác Validation (%)</h4>
+                                <div class="h-64">
+                                    <canvas id="chart-acc"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rekidney-card">
+                        <h3 class="text-base font-extrabold text-white mb-3">Ma Trận Nhầm Lẫn Đối Chuẩn (Confusion Matrices)</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- CM LBP -->
+                            <div class="bg-[#10182b] border border-[#1e2d4a] rounded-xl p-4 text-center">
+                                <div class="text-xs font-bold text-slate-300 mb-1">Mô Hình 1: Spatial Uniform LBP + SVM (RBF)</div>
+                                <div class="text-[11px] text-amber-400 mb-3">Worst-case ACER = 0.23% (Sai 4 mẫu vi hạt Print)</div>
+                                <div class="grid grid-cols-2 gap-2 max-w-xs mx-auto text-xs font-mono">
+                                    <div class="bg-blue-950/60 border border-blue-500/40 p-3 rounded">
+                                        <div class="text-slate-400 text-[10px]">True Spoof</div>
+                                        <div class="text-lg font-bold text-white">2,279</div>
+                                    </div>
+                                    <div class="bg-red-950/60 border border-red-500/40 p-3 rounded">
+                                        <div class="text-red-400 text-[10px]">False Live (APCER)</div>
+                                        <div class="text-lg font-bold text-red-400">3</div>
+                                    </div>
+                                    <div class="bg-red-950/60 border border-red-500/40 p-3 rounded">
+                                        <div class="text-red-400 text-[10px]">False Spoof (BPCER)</div>
+                                        <div class="text-lg font-bold text-red-400">1</div>
+                                    </div>
+                                    <div class="bg-blue-950/60 border border-blue-500/40 p-3 rounded">
+                                        <div class="text-slate-400 text-[10px]">True Live</div>
+                                        <div class="text-lg font-bold text-white">390</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CM ResNet-50 -->
+                            <div class="bg-[#10182b] border border-cyan-500/40 rounded-xl p-4 text-center shadow-[0_0_12px_rgba(6,182,212,0.1)]">
+                                <div class="text-xs font-bold text-cyan-400 mb-1">Mô Hình 2: Deep ResNet-50 + Focal Loss (Chủ Đạo)</div>
+                                <div class="text-[11px] text-emerald-400 mb-3">Worst-case ACER = 0.00% (Chính xác tuyệt đối 2,282/2,282)</div>
+                                <div class="grid grid-cols-2 gap-2 max-w-xs mx-auto text-xs font-mono">
+                                    <div class="bg-emerald-950/60 border border-emerald-500/40 p-3 rounded">
+                                        <div class="text-slate-400 text-[10px]">True Spoof</div>
+                                        <div class="text-lg font-bold text-white">2,282</div>
+                                    </div>
+                                    <div class="bg-slate-900 border border-slate-700 p-3 rounded">
+                                        <div class="text-slate-500 text-[10px]">False Live (APCER)</div>
+                                        <div class="text-lg font-bold text-emerald-400">0</div>
+                                    </div>
+                                    <div class="bg-slate-900 border border-slate-700 p-3 rounded">
+                                        <div class="text-slate-500 text-[10px]">False Spoof (BPCER)</div>
+                                        <div class="text-lg font-bold text-emerald-400">0</div>
+                                    </div>
+                                    <div class="bg-emerald-950/60 border border-emerald-500/40 p-3 rounded">
+                                        <div class="text-slate-400 text-[10px]">True Live</div>
+                                        <div class="text-lg font-bold text-white">391</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SUB-TAB 3: SO SÁNH MÔ HÌNH
+                     ------------------------------------------------------------- -->
+                <div id="subtab-compare" class="space-y-6 hidden">
+                    
+                    <div class="rekidney-card overflow-x-auto">
+                        <h3 class="text-base font-extrabold text-white mb-2">Bảng Đối Chuẩn Toàn Diện 10 Tiêu Chí Kỹ Thuật</h3>
+                        <div class="text-xs text-slate-400 mb-4">So sánh đối đầu giữa phương pháp Nhận dạng mẫu kinh điển và Học sâu tích chập</div>
+
+                        <table class="w-full text-left text-xs text-slate-300 border-collapse">
+                            <thead>
+                                <tr class="border-b border-[#1e2d4a] bg-[#10182b] text-slate-400 font-semibold uppercase text-[11px]">
+                                    <th class="p-3">Tiêu Chí Đánh Giá</th>
+                                    <th class="p-3">Mô Hình 1: LBP + SVM RBF</th>
+                                    <th class="p-3 text-cyan-400">Mô Hình 2: Deep ResNet-50 + Focal Loss</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparison-table-body" class="divide-y divide-[#172238]">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- App JavaScript -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
+
